@@ -99,6 +99,7 @@ public class Piece {
 	*/	
 	public Piece fastRotation() {
 		return next;
+		// MY CODE HERE HERE IS MY CODE
 	}
 	
 
