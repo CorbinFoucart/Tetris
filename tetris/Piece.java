@@ -27,7 +27,6 @@ public class Piece {
 	private int width;
 	private int height;
 	private Piece next; // "next" rotation
-
 	static private Piece[] pieces;	// singleton static array of first rotations
 
 	/**
@@ -35,11 +34,11 @@ public class Piece {
 	 Makes its own copy of the array and the TPoints inside it.
 	*/
 	public Piece(TPoint[] points) {
-		// YOUR CODE HERE
+		this.body = points;
+		this.width = computeWidth(points);
+		this.height = computeHeight(points);
+		this.skirt = computeSkirt(points, width);
 	}
-	
-
-	
 	
 	/**
 	 * Alternate constructor, takes a String with the x,y body points
@@ -88,7 +87,39 @@ public class Piece {
 	 rotated from the receiver.
 	 */
 	public Piece computeNextRotation() {
-		return null; // YOUR CODE HERE
+		// arraylist of TPoints to hold the rotated blocks
+		TPoint[] rotatedPts = new TPoint[body.length];
+		for (int i = 0; i < body.length; i++) {
+			int x = body[i].x;
+			int y = body[i].y;
+			
+			// apply CC rotation matrix to [x, y] vector: R = [0 -1; 1 0]
+			int x_p = x * 0 + y * (-1);
+			int y_p = x * 1 + y * 0;
+			
+			TPoint rotdNotCorrctd = new TPoint(x_p, y_p);
+			rotatedPts[i] = rotdNotCorrctd;			
+		}
+		
+		// we have now rotated the piece to quadrant II, so we must correct x values
+		int xMin = 0;
+		int yMin = 0;
+		for (int i = 0; i < rotatedPts.length; i++) {
+			int x = rotatedPts[i].x;
+			int y = rotatedPts[i].y;
+			
+			if (x < xMin) xMin = x;
+			if (y < yMin) yMin = y;
+		}
+		
+		for (int i = 0; i < rotatedPts.length; i++) {
+			rotatedPts[i].x += Math.abs(xMin);
+			rotatedPts[i].y += Math.abs(yMin);
+		} 
+		
+		// construct new piece from the arrayList
+		Piece rotdPiece = new Piece(rotatedPts);
+		return rotdPiece; 
 	}
 
 	/**
@@ -99,7 +130,6 @@ public class Piece {
 	*/	
 	public Piece fastRotation() {
 		return next;
-		// MY CODE HERE HERE IS MY CODE
 	}
 	
 
@@ -118,11 +148,24 @@ public class Piece {
 		
 		// standard equals() technique 2
 		// (null will be false)
+		// any other class object will be caught as false
 		if (!(obj instanceof Piece)) return false;
 		Piece other = (Piece)obj;
 		
-		// YOUR CODE HERE
-		return true;
+		// above lines guarantee that the object is a Piece
+		// look inside the other piece and determine whether
+		// the properties are the same
+		// we make copies to not alter the original arrays
+		TPoint[] objBody = other.getBody();
+		TPoint[] ourBody = this.body;
+		
+		//sort to remove ordering issue
+		Arrays.sort(objBody);
+		Arrays.sort(ourBody);
+		
+		if (objBody.equals(ourBody)) return true;
+		
+		return false;
 	}
 
 
@@ -188,7 +231,15 @@ public class Piece {
 	 to the first piece.
 	*/
 	private static Piece makeFastRotations(Piece root) {
-		return null; // YOUR CODE HERE
+//		Piece[] rotations = new Piece[4];
+//		
+//		// first rotation is starting state
+//		rotations[0] = root;
+//		
+//		// fill subsequent entries with next rotation
+//		for (int i = 0; i < 3; i++) rotations[i + 1] = rotations[i].computeNextRotation();		
+//		return rotations; 
+		return null;
 	}
 	
 	
@@ -216,6 +267,54 @@ public class Piece {
 		// Make an array out of the collection
 		TPoint[] array = points.toArray(new TPoint[0]);
 		return array;
+	}
+	
+	// My working helper Methods -----------------------------
+	
+	//Given a width, and TPoints, returns the skirt int[] for a given piece
+	private int[] computeSkirt(TPoint[] points, int width) {
+		int[] skirt = new int[width];
+		for (int i = 0; i < width; i++) {
+			//impossibly high value 
+			int minY = 5;
+			for (int j = 0; j < points.length; j++) {
+				TPoint currentPoint = points[j];
+				// if point is in right column
+				if (currentPoint.x == i) {
+					if (currentPoint.y < minY) minY = currentPoint.y;
+				}
+			}
+			skirt[i] = minY;
+		}		
+		return skirt;
+	}
+	
+	// Compute the width of a tetris piece from its points
+	private int computeWidth(TPoint[] points) {
+		int maxX = points[0].x;  
+		int minX = points[0].x;
+		for (int i = 1; i < points.length; i++) {
+			TPoint currentPoint = points[i];
+			if (currentPoint.x > maxX) maxX = currentPoint.x;
+			if (currentPoint.x < minX) minX = currentPoint.x;			
+		}
+		// + 1 is to account for differences in coordinates and actual width
+		int width = maxX - minX + 1;
+		return width;
+	}
+	
+	// Compute the height of a tetris piece from its points
+	private int computeHeight(TPoint[] points) {
+		int maxY = points[0].y;  
+		int minY = points[0].y;
+		for (int i = 1; i < points.length; i++) {
+			TPoint currentPoint = points[i];
+			if (currentPoint.y > maxY) maxY = currentPoint.y;
+			if (currentPoint.y < minY) minY = currentPoint.y;			
+		}
+		// + 1 is to account for differences in coordinates and actual width
+		int width = maxY - minY + 1;
+		return width;
 	}
 
 	
