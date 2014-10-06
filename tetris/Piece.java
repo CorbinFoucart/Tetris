@@ -230,16 +230,16 @@ public class Piece {
 	 and Piece.equals() to detect when the rotations have gotten us back
 	 to the first piece.
 	*/
-	private static Piece makeFastRotations(Piece root) {
-//		Piece[] rotations = new Piece[4];
-//		
-//		// first rotation is starting state
-//		rotations[0] = root;
-//		
-//		// fill subsequent entries with next rotation
-//		for (int i = 0; i < 3; i++) rotations[i + 1] = rotations[i].computeNextRotation();		
-//		return rotations; 
-		return null;
+	private static Piece makeFastRotations(Piece root) {		
+		Piece nextRotation = root.computeNextRotation();
+		root.next = nextRotation;
+		while(!nextRotation.computeNextRotation().equals(root)) {
+			nextRotation.next = nextRotation.computeNextRotation();
+			nextRotation = nextRotation.next;
+		}
+		nextRotation.next = root;
+		
+		return root;
 	}
 	
 	
@@ -269,7 +269,7 @@ public class Piece {
 		return array;
 	}
 	
-	// My working helper Methods -----------------------------
+	// -------------------------- My working helper Methods ----------------------------- //
 	
 	//Given a width, and TPoints, returns the skirt int[] for a given piece
 	private int[] computeSkirt(TPoint[] points, int width) {
