@@ -16,58 +16,78 @@ public class PieceTest {
 	// For example, the code below sets up some
 	// pyramid and s pieces in instance variables
 	// that can be used in tests.
-	private Piece pyr1, pyr2, pyr3, pyr4, pyr5,
-				  stick1, stick2, stick3, stick4, stick5, 
-				  L11, L12, L13, L14, L15, 
-				  L21, L22, L23, L24, L25,
-				  S11, S12, S13, S14, S15,
-				  S21, S22, S23, S24, S25, 
-				  sqr1, sqr2, sqr3, sqr4, sqr5;
+	private Piece pyr1, pyr2, pyr3, pyr4, pyr5, pyr1test,
+				  stick1, stick2, stick3, stick4, stick5, stick1test, 
+				  L11, L12, L13, L14, L15, L1test,
+				  L21, L22, L23, L24, L25, L2test,
+				  S11, S12, S13, S14, S15, S1test,
+				  S21, S22, S23, S24, S25, S2test,
+				  sqr1, sqr2, sqr3, sqr4, sqr5, sqr1test;
 	private Piece s, sRotated;
 
 	@Before
 	public void setUp() throws Exception {
 		
+		// ALL piece instantiation
 		pyr1 = new Piece(Piece.PYRAMID_STR);
+		pyr1test = new Piece(Piece.PYRAMID_STR);
 		pyr2 = pyr1.computeNextRotation();
 		pyr3 = pyr2.computeNextRotation();
 		pyr4 = pyr3.computeNextRotation();
 		pyr5 = pyr4.computeNextRotation();
 		
 		stick1 = new Piece(Piece.STICK_STR);
+		stick1test = new Piece(Piece.STICK_STR);
 		stick2 = stick1.computeNextRotation();
 		stick3 = stick2.computeNextRotation();
 		stick4 = stick3.computeNextRotation();
 		stick5 = stick4.computeNextRotation();
 		
 		L11 = new Piece(Piece.L1_STR);
+		L1test = new Piece(Piece.L1_STR);
 		L21 = new Piece(Piece.L2_STR);
+		L2test = new Piece(Piece.L2_STR);
 		S11 = new Piece(Piece.S1_STR);
+		S1test = new Piece(Piece.S1_STR);
 		S21 = new Piece(Piece.S2_STR);
+		S2test = new Piece(Piece.S2_STR);
 		sqr1 = new Piece(Piece.SQUARE_STR);
+		sqr1test = new Piece(Piece.SQUARE_STR);
 		
 		s = new Piece(Piece.S1_STR);
 		sRotated = s.computeNextRotation();
 	}
 	
-//	
+	
+	@Test
+	// test the first set of rotations
+	public void testRotation2() {
+		// Check size of pyr piece
+		int[] pyrSkirt = {1, 0};
+		assertEquals(2, pyr2.getWidth());
+		assertEquals(3, pyr2.getHeight());
+		assertArrayEquals(pyrSkirt, pyr2.getSkirt());
+		
+		//check size of stick
+		int[] stickSkirt = {0, 0, 0, 0};
+		assertEquals(4, stick2.getWidth());
+		assertEquals(1, stick2.getHeight());
+		assertArrayEquals(stickSkirt, stick2.getSkirt());
+		
+		
+		
+	}
+	
 //	@Test
-//	// test the first set of rotations
-//	public void testRotation2() {
-//		// Check size of pyr piece
-//		int[] pyrSkirt = {1, 0};
-//		assertEquals(2, pyr2.getWidth());
-//		assertEquals(3, pyr2.getHeight());
-//		assertArrayEquals(pyrSkirt, pyr2.getSkirt());
-//		
-//		//check size of stick
-//		int[] stickSkirt = {0, 0, 0, 0};
-//		assertEquals(4, stick2.getWidth());
-//		assertEquals(1, stick2.getHeight());
-//		assertArrayEquals(stickSkirt, stick2.getSkirt());
-//		
-//		
-//		
+//	// Test our overridden .equals() method
+//	public void testEquals(){
+//		assertEquals(true, pyr1.equals(pyr1test));
+//		assertEquals(true, stick1.equals(stick1test));
+//		assertEquals(true, L11.equals(L1test));
+//		assertEquals(true, L21.equals(L2test));
+//		assertEquals(true, S11.equals(S1test));
+//		assertEquals(true, S21.equals(S2test));
+//		assertEquals(true, sqr1.equals(sqr1test));
 //	}
 //	
 //	@Test

@@ -1,6 +1,7 @@
 // Piece.java
 package tetris;
 
+import java.awt.Point;
 import java.util.*;
 
 /**
@@ -133,6 +134,28 @@ public class Piece {
 	}
 	
 
+	/**
+	 Given the "first" root rotation of a piece, computes all
+	 the other rotations and links them all together
+	 in a circular list. The list loops back to the root as soon
+	 as possible. Returns the root piece. fastRotation() relies on the
+	 pointer structure setup here.
+	*/
+	/*
+	 Implementation: uses computeNextRotation()
+	 and Piece.equals() to detect when the rotations have gotten us back
+	 to the first piece.
+	*/
+	private static Piece makeFastRotations(Piece root) {		
+		Piece nextRotation = root.computeNextRotation();
+		root.next = nextRotation;
+		while(!nextRotation.computeNextRotation().equals(root)) {
+			nextRotation.next = nextRotation.computeNextRotation();
+			nextRotation = nextRotation.next;
+		}
+		nextRotation.next = root;
+		return root;
+	}
 
 	/**
 	 Returns true if two pieces are the same --
@@ -142,6 +165,7 @@ public class Piece {
 	 in the same order in the bodies. Used internally to detect
 	 if two rotations are effectively the same.
 	*/
+	@Override
 	public boolean equals(Object obj) {
 		// standard equals() technique 1
 		if (obj == this) return true;
@@ -159,13 +183,33 @@ public class Piece {
 		TPoint[] objBody = other.getBody();
 		TPoint[] ourBody = this.body;
 		
-		//sort to remove ordering issue
-		Arrays.sort(objBody);
-		Arrays.sort(ourBody);
+		// check for same size (so other piece can't contain more points)
+		if (objBody.length != ourBody.length) return false;
 		
-		if (objBody.equals(ourBody)) return true;
+		boolean[] matchingCoords = new boolean[ourBody.length];
+		for (int i = 0; i < ourBody.length; i++) {
+			int ourX = ourBody[i].x;
+			int ourY = ourBody[i].y;
+			for (int j = 0; j < objBody.length; j++){
+				int objX = objBody[j].x;
+				int objY = objBody[j].y;
+				
+				if (ourX == objX && ourY == objY) {
+					matchingCoords[i] = true;
+					objBody[j].x = -1;
+					objBody[j].y = -1;
+				}
+			}
+		}
 		
-		return false;
+		// check that all coordinates matched
+		// credit to stackOverflow for this alternative to normal
+		// for loop checking each element: Question 18631837
+		for (boolean match : matchingCoords){
+			if (!match) return false;
+		}
+		
+		return true;
 	}
 
 
@@ -214,32 +258,6 @@ public class Piece {
 		
 		
 		return Piece.pieces;
-	}
-	
-
-
-	/**
-	 Given the "first" root rotation of a piece, computes all
-	 the other rotations and links them all together
-	 in a circular list. The list loops back to the root as soon
-	 as possible. Returns the root piece. fastRotation() relies on the
-	 pointer structure setup here.
-	*/
-	/*
-	 Implementation: uses computeNextRotation()
-	 and Piece.equals() to detect when the rotations have gotten us back
-	 to the first piece.
-	*/
-	private static Piece makeFastRotations(Piece root) {		
-		Piece nextRotation = root.computeNextRotation();
-		root.next = nextRotation;
-		while(!nextRotation.computeNextRotation().equals(root)) {
-			nextRotation.next = nextRotation.computeNextRotation();
-			nextRotation = nextRotation.next;
-		}
-		nextRotation.next = root;
-		
-		return root;
 	}
 	
 	
