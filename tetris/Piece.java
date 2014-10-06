@@ -130,6 +130,9 @@ public class Piece {
 	 just returns null.
 	*/	
 	public Piece fastRotation() {
+		if (next == null) {
+			makeFastRotations(this);
+		}
 		return next;
 	}
 	
@@ -176,12 +179,12 @@ public class Piece {
 		if (!(obj instanceof Piece)) return false;
 		Piece other = (Piece)obj;
 		
+		
 		// above lines guarantee that the object is a Piece
 		// look inside the other piece and determine whether
 		// the properties are the same
-		// we make copies to not alter the original arrays
 		TPoint[] objBody = other.getBody();
-		TPoint[] ourBody = this.body;
+		TPoint[] ourBody = body;
 		
 		// check for same size (so other piece can't contain more points)
 		if (objBody.length != ourBody.length) return false;
@@ -196,8 +199,6 @@ public class Piece {
 				
 				if (ourX == objX && ourY == objY) {
 					matchingCoords[i] = true;
-					objBody[j].x = -1;
-					objBody[j].y = -1;
 				}
 			}
 		}

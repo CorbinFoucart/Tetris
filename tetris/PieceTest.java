@@ -58,6 +58,13 @@ public class PieceTest {
 		sRotated = s.computeNextRotation();
 	}
 	
+	@Test
+	//Test the fast rotation functionality
+	public void testFastRotations1() {
+		assertEquals(true, pyr2.equals(pyr1.fastRotation()));
+		
+	}
+	
 	
 	@Test
 	// test the first set of rotations
@@ -72,10 +79,7 @@ public class PieceTest {
 		int[] stickSkirt = {0, 0, 0, 0};
 		assertEquals(4, stick2.getWidth());
 		assertEquals(1, stick2.getHeight());
-		assertArrayEquals(stickSkirt, stick2.getSkirt());
-		
-		
-		
+		assertArrayEquals(stickSkirt, stick2.getSkirt());	
 	}
 	
 //	@Test
