@@ -108,7 +108,7 @@ public class Board	{
 	 always return true.
 	*/
 	public boolean getGrid(int x, int y) {
-		return false; // YOUR CODE HERE
+		return grid[x][y]; 
 	}
 	
 	
@@ -134,12 +134,50 @@ public class Board	{
 	public int place(Piece piece, int x, int y) {
 		// flag !committed problem
 		if (!committed) throw new RuntimeException("place commit problem");
-			
+		
+		// get candidate squares for placement
+		TPoint[] piecePts = piece.getBody();
+		TPoint[] coordPts = new TPoint[piece.getBody().length];
+		for (int i = 0; i < piece.getBody().length; i++) {
+			TPoint currTP = new TPoint(piecePts[i].x + x, piecePts[i].y + y);
+			coordPts[i] = currTP;
+		}	
+		
+		// check if piece is in bounds
+		for (int i = 0; i < coordPts.length; i++) {
+			int checkX = coordPts[i].x;
+			int checkY = coordPts[i].y;
+			if (!inBounds(checkX, checkY)) {
+				int result = PLACE_OUT_BOUNDS;
+				return result;
+			}
+		}
+		
+		//check squares for obstructions
+		
+		
+		// if no obstructions	
 		int result = PLACE_OK;
 		
-		// YOUR CODE HERE
+		// if completes a row
 		
+		//save backup values
+		
+		// update grid to reflect the piece addition
+		
+		
+		committed = false;
 		return result;
+	}
+	
+	/**
+	 Checks whether a given x,y coordinate pair (grid[x][y]) are out
+	 of bounds on our board. x,y must be 0 or higher, but must be one
+	 less than the height or width due to 0 indexing.
+	 */
+	public boolean inBounds(int x, int y) {
+		return ( ((x >= 0) && (x < width))
+				&& ((y >= 0) && (y < height)) );
 	}
 	
 	
