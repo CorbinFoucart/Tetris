@@ -97,6 +97,7 @@ public class BoardTest {
 		assertEquals(2, GS3.getRowWidth(1));
 		assertEquals(3, GS3.getRowWidth(2));
 		System.out.print(GS3.toString());
+		
 	}
 	
 //	// Place sRotated into the board, then check some measures

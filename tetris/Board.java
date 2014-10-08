@@ -16,10 +16,13 @@ public class Board	{
 	private boolean[][] grid;
 	private boolean DEBUG = true;
 	boolean committed;
+	private int[] widths;
+	private int[] heights;
+	private int maxHeight;
 	
-	private boolean[][] xGrid;
 	
 	// BACKUP VARIABLES
+	private boolean[][] xGrid;
 	
 	
 	
@@ -34,6 +37,8 @@ public class Board	{
 		this.height = height;
 		grid = new boolean[width][height];
 		committed = true;
+		this.widths = new int[height];
+		this.heights = new int[width];
 		
 		// YOUR CODE HERE
 	
@@ -189,6 +194,22 @@ public class Board	{
 				int result = PLACE_BAD;
 				return result;
 			}
+			
+			// untested
+			// piece is not out of bounds or obstructed.
+			// now we can use the coordinates to update widths/heights
+			widths[checkY] += 1;
+			if (heights[checkX] < checkY + 1) {
+				heights[checkX] = checkY + 1;
+			}
+		}
+		
+		// Untested
+		// find MaxHeight after piece has been added
+		maxHeight = heights[0];
+		for (int i = 0; i < width; i++) {
+			int possMax = heights[i];
+			if (possMax > maxHeight) maxHeight = possMax;
 		}
 		
 		// place is at least OK by this point.
@@ -227,11 +248,12 @@ public class Board	{
 	*/
 	public int clearRows() {
 		int rowsCleared = 0;
+		
 		// YOUR CODE HERE
+		
 		sanityCheck();
 		return rowsCleared;
 	}
-
 
 	/**
 	 Reverts the board to its state before up to one place
@@ -244,15 +266,12 @@ public class Board	{
 		// YOUR CODE HERE
 	}
 	
-	
 	/**
 	 Puts the board in the committed state.
 	*/
 	public void commit() {
-		committed = true;
+		committed = true;	
 	}
-
-
 	
 	/*
 	 Renders the board state as a big String, suitable for printing.
