@@ -17,6 +17,11 @@ public class Board	{
 	private boolean DEBUG = true;
 	boolean committed;
 	
+	private boolean[][] xGrid;
+	
+	// BACKUP VARIABLES
+	
+	
 	
 	// Here a few trivial methods are provided:
 	
@@ -31,6 +36,17 @@ public class Board	{
 		committed = true;
 		
 		// YOUR CODE HERE
+	
+		
+	}
+	
+	/**
+	 Saves all of the current values for the board to our 1 deep backup
+	 variables. If undo is called, we can change the current values
+	 to the backup variables' values.
+	 */
+	public void saveBackup() {
+		xGrid = this.grid;
 	}
 	
 	
@@ -65,7 +81,7 @@ public class Board	{
 	*/
 	public void sanityCheck() {
 		if (DEBUG) {
-			// YOUR CODE HERE
+			
 		}
 	}
 	
@@ -144,29 +160,37 @@ public class Board	{
 		}	
 		
 		// check if piece is in bounds
+		// check if square is currently obstructed 
 		for (int i = 0; i < coordPts.length; i++) {
 			int checkX = coordPts[i].x;
 			int checkY = coordPts[i].y;
+			
 			if (!inBounds(checkX, checkY)) {
 				int result = PLACE_OUT_BOUNDS;
 				return result;
 			}
+			
+			if (grid[checkX][checkY] == true) {
+				int result = PLACE_BAD;
+				return result;
+			}
 		}
 		
-		//check squares for obstructions
-		
-		
-		// if no obstructions	
+		// place is at least OK by this point.
 		int result = PLACE_OK;
 		
-		// if completes a row
+		// SAVE BACKUP VALUES
+		saveBackup();
 		
-		//save backup values
+		// UPDATE GRID TO INCLUDE PIECE
+		for (int i = 0; i < coordPts.length; i++) {
+			grid[coordPts[i].x][coordPts[i].y] = true;
+		}
 		
-		// update grid to reflect the piece addition
+		//CHECK FOR IF A ROW IS COMPLETED
 		
 		
-		committed = false;
+//		committed = false;
 		return result;
 	}
 	
@@ -179,6 +203,8 @@ public class Board	{
 		return ( ((x >= 0) && (x < width))
 				&& ((y >= 0) && (y < height)) );
 	}
+	
+
 	
 	
 	/**

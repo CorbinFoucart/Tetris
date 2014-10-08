@@ -38,11 +38,22 @@ public class BoardTest {
 	//Check Board.place() results
 	@Test
 	public void PlaceCheck() {
+		// Out of Bounds Testing
 		assertEquals(PLACE_OUT_BOUNDS, b.place(pyr1, -2, -2));
 		assertEquals(PLACE_OUT_BOUNDS, b.place(pyr1, -2, 0));
 		assertEquals(PLACE_OUT_BOUNDS, b.place(pyr1, 0, -2));
 		assertEquals(PLACE_OUT_BOUNDS, b.place(pyr1, 0, 5));
 		assertEquals(PLACE_OUT_BOUNDS, b.place(pyr1, 2, 0));
+		
+		// Piece Collision Testing
+		b.place(pyr1, 0, 0);
+		assertEquals(PLACE_BAD, b.place(pyr1, 0, 0));
+		assertEquals(PLACE_BAD, b.place(pyr1, 0, 1));
+		assertEquals(PLACE_BAD, b.place(pyr2, 0, 0));
+		assertEquals(PLACE_OK, b.place(pyr2, 1, 1));
+		
+		
+		
 	}
 	
 //	// Check the basic width/height/max after the one placement
