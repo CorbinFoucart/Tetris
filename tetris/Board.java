@@ -71,7 +71,12 @@ public class Board	{
 	 For an empty board this is 0.
 	*/
 	public int getMaxHeight() {	 
-		return 0; // YOUR CODE HERE
+		int currMax = 0;
+		for (int i = 0; i < width; i++) {
+			int colHeight = getColumnHeight(i);
+			if (colHeight > currMax) currMax = colHeight;
+		}		
+		return currMax; 
 	}
 	
 	
@@ -105,7 +110,12 @@ public class Board	{
 	 The height is 0 if the column contains no blocks.
 	*/
 	public int getColumnHeight(int x) {
-		return 0; // YOUR CODE HERE
+		int rtnHeight = 0;
+		for (int i = 0; i < height; i++) {
+			boolean tmpBool = grid[x][i];
+			if (tmpBool) rtnHeight = i + 1;
+		}
+		return rtnHeight; 
 	}
 	
 	
@@ -114,7 +124,12 @@ public class Board	{
 	 the given row.
 	*/
 	public int getRowWidth(int y) {
-		 return 0; // YOUR CODE HERE
+		int rtnWidth = 0;
+		for (int i = 0; i < width; i++) {
+			boolean tmpBool = grid[i][y];
+			if (tmpBool) rtnWidth += 1;
+		}
+		 return rtnWidth; 
 	}
 	
 	
@@ -187,7 +202,9 @@ public class Board	{
 			grid[coordPts[i].x][coordPts[i].y] = true;
 		}
 		
-		//CHECK FOR IF A ROW IS COMPLETED
+		// CHECK FOR IF A ROW IS COMPLETED
+		
+		// Update widths, heights, maxHeight
 		
 		
 //		committed = false;
@@ -199,13 +216,10 @@ public class Board	{
 	 of bounds on our board. x,y must be 0 or higher, but must be one
 	 less than the height or width due to 0 indexing.
 	 */
-	public boolean inBounds(int x, int y) {
+	private boolean inBounds(int x, int y) {
 		return ( ((x >= 0) && (x < width))
 				&& ((y >= 0) && (y < height)) );
 	}
-	
-
-	
 	
 	/**
 	 Deletes rows that are filled all the way across, moving
@@ -217,7 +231,6 @@ public class Board	{
 		sanityCheck();
 		return rowsCleared;
 	}
-
 
 
 	/**
@@ -260,6 +273,7 @@ public class Board	{
 		for (int x=0; x<width+2; x++) buff.append('-');
 		return(buff.toString());
 	}
+	
 }
 
 
