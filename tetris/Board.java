@@ -81,6 +81,7 @@ public class Board	{
 				System.arraycopy(xWidths, 0, widths, 0, xWidths.length);
 				System.arraycopy(xHeights, 0, heights, 0, xHeights.length);
 				maxHeight = xMaxHeight;
+				committed = true;
 			}
 		}
 	
