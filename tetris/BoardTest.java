@@ -108,6 +108,12 @@ public class BoardTest {
 		Board GS4 = new Board(3, 6);
 		GS4.place(pyr1, 0, 0);
 		int result = GS4.place(sRotated, 1, 1);
+		
+		// REMOVE ANNOTATION AFTER CLEARROWS 
+		// this test passes because PLACE_ROW_FILLED 
+		// would have been the result if it had been
+		// run 1 step earlier. As far as the computer
+		// knows, the row from pyr has been cleared
 		assertEquals(Board.PLACE_OK, result);
 //		System.out.print(GS4.toString());
 		assertEquals(1, GS4.getColumnHeight(0));
@@ -123,17 +129,59 @@ public class BoardTest {
 		GS5.place(pyr1, 0, 0);
 		GS5.place(stick1, 0, 1);
 		int result = GS5.place(sRotated, 1, 1);
-		assertEquals(Board.PLACE_OK, result);
+		assertEquals(Board.PLACE_ROW_FILLED, result);
 //		System.out.print(GS5.toString());
 		assertEquals(5, GS5.getColumnHeight(0));
 		assertEquals(4, GS5.getColumnHeight(1));
 		assertEquals(3, GS5.getColumnHeight(2));
 		assertEquals(5, GS5.getMaxHeight());
 	}
+
+	// Single row clear test
+	@Test
+	public void clearRows1() {
+		Board CR1 = new Board(3,6);
+		CR1.place(pyr1, 0, 0);
+		CR1.clearRows();
+//		System.out.print(CR1.toString());
+	}
 	
-//	// Make  more tests, by putting together longer series of 
-//	// place, clearRows, undo, place ... checking a few col/row/max
-//	// numbers that the board looks right after the operations.
+	@Test
+	public void clearRows2() {
+		Board CR2 = new Board(3,6);
+		CR2.place(pyr1, 0, 0);
+		CR2.place(pyr2, 1, 1);
+		CR2.place(stick1, 0, 1);
+//		System.out.print(CR2.toString());
+		CR2.clearRows();
+//		System.out.print(CR2.toString());
+	}
+	
+
+	@Test
+	public void clearRows3() {
+		Board CR3 = new Board(4,4);
+		CR3.place(stick1, 0, 0);
+		CR3.place(stick1, 1, 0);
+		CR3.place(stick1, 2, 0);
+		CR3.place(stick1, 3, 0);
+//		System.out.print(CR3.toString());
+		CR3.clearRows();
+//		System.out.print(CR3.toString());
+	}
+	
+	@Test
+	public void clearRows4() {
+		Board CR4 = new Board(4,8);
+		CR4.place(pyr1, 0, 0);
+		CR4.place(stick1.computeNextRotation(), 0, 2);
+		CR4.place(pyr1, 1, 3);
+		CR4.place(stick1.fastRotation(), 0, 5);
+		System.out.print(CR4.toString());
+		CR4.clearRows();
+		System.out.print(CR4.toString());
+	}
+	
 	
 	
 }
