@@ -72,25 +72,34 @@ public class Board	{
 	
 	
 	/**
-	 Returns the max column height present in the board.
-	 For an empty board this is 0.
-	*/
-	public int getMaxHeight() {	 
-		int currMax = 0;
-		for (int i = 0; i < width; i++) {
-			int colHeight = getColumnHeight(i);
-			if (colHeight > currMax) currMax = colHeight;
-		}		
-		return currMax; 
-	}
-	
-	
-	/**
 	 Checks the board for internal consistency -- used
 	 for debugging.
 	*/
 	public void sanityCheck() {
 		if (DEBUG) {
+			
+			// check heights[] is correct
+			for (int i = 0; i < width; i++) {
+				int chHeight = getColumnHeight(i);
+				if (chHeight != heights[i]) {
+					throw new RuntimeException("Heights[] incorrect");
+				}
+			}
+			
+			// check widths is correct
+			for (int j = 0; j < height; j++) {
+				int chWidth = getRowWidth(j);
+				if (chWidth != widths[j]) {
+					throw new RuntimeException("Widths[] incorrect");
+				}
+			}
+			
+			// check max height is correct
+			int chMaxHeight = getMaxHeight();
+			if (chMaxHeight != maxHeight) {
+				throw new RuntimeException("MaxHeight incorrect");
+			}
+			
 			
 		}
 	}
@@ -107,46 +116,8 @@ public class Board	{
 	public int dropHeight(Piece piece, int x) {
 		return 0; // YOUR CODE HERE
 	}
-	
-	
-	/**
-	 Returns the height of the given column --
-	 i.e. the y value of the highest block + 1.
-	 The height is 0 if the column contains no blocks.
-	*/
-	public int getColumnHeight(int x) {
-		int rtnHeight = 0;
-		for (int i = 0; i < height; i++) {
-			boolean tmpBool = grid[x][i];
-			if (tmpBool) rtnHeight = i + 1;
-		}
-		return rtnHeight; 
-	}
-	
-	
-	/**
-	 Returns the number of filled blocks in
-	 the given row.
-	*/
-	public int getRowWidth(int y) {
-		int rtnWidth = 0;
-		for (int i = 0; i < width; i++) {
-			boolean tmpBool = grid[i][y];
-			if (tmpBool) rtnWidth += 1;
-		}
-		 return rtnWidth; 
-	}
-	
-	
-	/**
-	 Returns true if the given block is filled in the board.
-	 Blocks outside of the valid width/height area
-	 always return true.
-	*/
-	public boolean getGrid(int x, int y) {
-		return grid[x][y]; 
-	}
-	
+		
+
 	
 	public static final int PLACE_OK = 0;
 	public static final int PLACE_ROW_FILLED = 1;
@@ -170,78 +141,82 @@ public class Board	{
 	public int place(Piece piece, int x, int y) {
 		// flag !committed problem
 		if (!committed) throw new RuntimeException("place commit problem");
+		boolean sanityCheck = true;
 		
 		// get candidate squares for placement
-		TPoint[] piecePts = piece.getBody();
-		TPoint[] coordPts = new TPoint[piece.getBody().length];
-		for (int i = 0; i < piece.getBody().length; i++) {
-			TPoint currTP = new TPoint(piecePts[i].x + x, piecePts[i].y + y);
-			coordPts[i] = currTP;
-		}	
+		TPoint[] coordPts = getCoords(piece, x, y);
 		
-		// check if piece is in bounds
-		// check if square is currently obstructed 
+		// check if piece is in bounds, if square is currently obstructed 
 		for (int i = 0; i < coordPts.length; i++) {
 			int checkX = coordPts[i].x;
 			int checkY = coordPts[i].y;
 			
 			if (!inBounds(checkX, checkY)) {
 				int result = PLACE_OUT_BOUNDS;
+				sanityCheck = false;
 				return result;
 			}
 			
 			if (grid[checkX][checkY] == true) {
 				int result = PLACE_BAD;
+				sanityCheck = false;
 				return result;
 			}
-			
-			// untested
-			// piece is not out of bounds or obstructed.
-			// now we can use the coordinates to update widths/heights
-			widths[checkY] += 1;
-			if (heights[checkX] < checkY + 1) {
-				heights[checkX] = checkY + 1;
-			}
 		}
-		
-		// Untested
-		// find MaxHeight after piece has been added
-		maxHeight = heights[0];
-		for (int i = 0; i < width; i++) {
-			int possMax = heights[i];
-			if (possMax > maxHeight) maxHeight = possMax;
-		}
-		
 		// place is at least OK by this point.
 		int result = PLACE_OK;
 		
-		// SAVE BACKUP VALUES
+		// save backup values in case of undo()
 		saveBackup();
 		
-		// UPDATE GRID TO INCLUDE PIECE
-		for (int i = 0; i < coordPts.length; i++) {
-			grid[coordPts[i].x][coordPts[i].y] = true;
-		}
+		// update widths[], heights[], maxHeight
+		updateAfterPlace(coordPts);
 		
 		// CHECK FOR IF A ROW IS COMPLETED
 		
-		// Update widths, heights, maxHeight
 		
 		
+		if (sanityCheck) sanityCheck();
 //		committed = false;
 		return result;
 	}
-	
-	/**
-	 Checks whether a given x,y coordinate pair (grid[x][y]) are out
-	 of bounds on our board. x,y must be 0 or higher, but must be one
-	 less than the height or width due to 0 indexing.
-	 */
-	private boolean inBounds(int x, int y) {
-		return ( ((x >= 0) && (x < width))
-				&& ((y >= 0) && (y < height)) );
-	}
-	
+			// Helper method to place() to get candiate coordinate points
+			private TPoint[] getCoords(Piece piece, int x, int y) {
+				TPoint[] piecePts = piece.getBody();
+				TPoint[] coordPts = new TPoint[piece.getBody().length];
+				for (int i = 0; i < piece.getBody().length; i++) {
+					TPoint currTP = new TPoint(piecePts[i].x + x, piecePts[i].y + y);
+					coordPts[i] = currTP;
+				}
+				return coordPts;
+			}
+			
+			// Helper method to place() to update board information
+			// updates widths[], heights[], maxHeight
+			private void updateAfterPlace(TPoint [] coordPts) {
+				for (int j = 0; j < coordPts.length; j++) {
+					int checkX = coordPts[j].x;
+					int checkY = coordPts[j].y;
+					
+					widths[checkY] += 1;
+					if (heights[checkX] < checkY + 1) {
+						heights[checkX] = checkY + 1;
+					}
+				}
+				
+				// update MaxHeight after piece has been added
+				maxHeight = heights[0];
+				for (int i = 0; i < width; i++) {
+					int possMax = heights[i];
+					if (possMax > maxHeight) maxHeight = possMax;
+				}
+				
+				// update grid to include piece
+				for (int i = 0; i < coordPts.length; i++) {
+					grid[coordPts[i].x][coordPts[i].y] = true;
+				}
+			}
+			
 	/**
 	 Deletes rows that are filled all the way across, moving
 	 things above down. Returns the number of rows cleared.
@@ -253,6 +228,16 @@ public class Board	{
 		
 		sanityCheck();
 		return rowsCleared;
+	}
+	
+	/**
+	 Checks whether a given x,y coordinate pair (grid[x][y]) are out
+	 of bounds on our board. x,y must be 0 or higher, but must be one
+	 less than the height or width due to 0 indexing.
+	 */
+	private boolean inBounds(int x, int y) {
+		return ( ((x >= 0) && (x < width))
+				&& ((y >= 0) && (y < height)) );
 	}
 
 	/**
@@ -272,6 +257,56 @@ public class Board	{
 	public void commit() {
 		committed = true;	
 	}
+	
+	/**
+	 Returns the number of filled blocks in
+	 the given row.
+	*/
+	public int getRowWidth(int y) {
+		int rtnWidth = 0;
+		for (int i = 0; i < width; i++) {
+			boolean tmpBool = grid[i][y];
+			if (tmpBool) rtnWidth += 1;
+		}
+		 return rtnWidth; 
+	}
+	
+	/**
+	 Returns the height of the given column --
+	 i.e. the y value of the highest block + 1.
+	 The height is 0 if the column contains no blocks.
+	*/
+	public int getColumnHeight(int x) {
+		int rtnHeight = 0;
+		for (int i = 0; i < height; i++) {
+			boolean tmpBool = grid[x][i];
+			if (tmpBool) rtnHeight = i + 1;
+		}
+		return rtnHeight; 
+	}
+	
+	/**
+	 Returns the max column height present in the board.
+	 For an empty board this is 0.
+	*/
+	public int getMaxHeight() {	 
+		int currMax = 0;
+		for (int i = 0; i < width; i++) {
+			int colHeight = getColumnHeight(i);
+			if (colHeight > currMax) currMax = colHeight;
+		}		
+		return currMax; 
+	}
+	
+	/**
+	 Returns true if the given block is filled in the board.
+	 Blocks outside of the valid width/height area
+	 always return true.
+	*/
+	public boolean getGrid(int x, int y) {
+		return grid[x][y]; 
+	}
+	
 	
 	/*
 	 Renders the board state as a big String, suitable for printing.

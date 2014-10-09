@@ -6,7 +6,7 @@ import org.junit.*;
 
 public class BoardTest {
 	Board b;
-	Piece pyr1, pyr2, pyr3, pyr4, s, sRotated;
+	Piece pyr1, pyr2, pyr3, pyr4, s, sRotated, stick1;
 	
 	public static final int PLACE_OK = 0;
 	public static final int PLACE_ROW_FILLED = 1;
@@ -30,6 +30,8 @@ public class BoardTest {
 		
 		s = new Piece(Piece.S1_STR);
 		sRotated = s.computeNextRotation();
+		
+		stick1 = new Piece(Piece.STICK_STR);
 		
 	}
 	
@@ -96,22 +98,39 @@ public class BoardTest {
 		assertEquals(3, GS3.getRowWidth(0));
 		assertEquals(2, GS3.getRowWidth(1));
 		assertEquals(3, GS3.getRowWidth(2));
-		System.out.print(GS3.toString());
+//		System.out.print(GS3.toString());
 		
 	}
 	
-//	// Place sRotated into the board, then check some measures
-//	@Test
-//	public void testSample2() {
-//		b.commit();
-//		int result = b.place(sRotated, 1, 1);
-//		assertEquals(Board.PLACE_OK, result);
-//		assertEquals(1, b.getColumnHeight(0));
-//		assertEquals(4, b.getColumnHeight(1));
-//		assertEquals(3, b.getColumnHeight(2));
-//		assertEquals(4, b.getMaxHeight());
-//	}
-//	
+	// Place sRotated into the board, then check some measures
+	@Test
+	public void geometrySample4() {
+		Board GS4 = new Board(3, 6);
+		GS4.place(pyr1, 0, 0);
+		int result = GS4.place(sRotated, 1, 1);
+		assertEquals(Board.PLACE_OK, result);
+//		System.out.print(GS4.toString());
+		assertEquals(1, GS4.getColumnHeight(0));
+		assertEquals(4, GS4.getColumnHeight(1));
+		assertEquals(3, GS4.getColumnHeight(2));
+		assertEquals(4, GS4.getMaxHeight());
+	}
+	
+	// Place sRotated into the board, then check some measures
+	@Test
+	public void geometrySample5() {
+		Board GS5 = new Board(3, 6);
+		GS5.place(pyr1, 0, 0);
+		GS5.place(stick1, 0, 1);
+		int result = GS5.place(sRotated, 1, 1);
+		assertEquals(Board.PLACE_OK, result);
+//		System.out.print(GS5.toString());
+		assertEquals(5, GS5.getColumnHeight(0));
+		assertEquals(4, GS5.getColumnHeight(1));
+		assertEquals(3, GS5.getColumnHeight(2));
+		assertEquals(5, GS5.getMaxHeight());
+	}
+	
 //	// Make  more tests, by putting together longer series of 
 //	// place, clearRows, undo, place ... checking a few col/row/max
 //	// numbers that the board looks right after the operations.
