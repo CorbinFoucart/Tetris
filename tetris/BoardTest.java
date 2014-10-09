@@ -172,15 +172,49 @@ public class BoardTest {
 	
 	@Test
 	public void clearRows4() {
-		Board CR4 = new Board(4,8);
+		Board CR4 = new Board(4,6);
 		CR4.place(pyr1, 0, 0);
 		CR4.place(stick1.computeNextRotation(), 0, 2);
 		CR4.place(pyr1, 1, 3);
 		CR4.place(stick1.fastRotation(), 0, 5);
-		System.out.print(CR4.toString());
+//		System.out.print(CR4.toString());
 		CR4.clearRows();
-		System.out.print(CR4.toString());
+//		System.out.print(CR4.toString());
 	}
+	
+	@Test
+	public void dropheight1() {
+		Board DH1 = new Board(4,6);
+		DH1.place(pyr1, 0, 0);
+		assertEquals(1, DH1.dropHeight(pyr2, 1));
+//		System.out.print(DH1.toString());
+		DH1.place(pyr2, 1, DH1.dropHeight(pyr2, 1));
+//		System.out.print(DH1.toString());
+	}
+	
+	@Test
+	public void dropheight2() {
+		Board DH2 = new Board(5,7);
+		DH2.place(stick1, 1, 0);
+		System.out.print(DH2.toString());
+		assertEquals(3, DH2.dropHeight(sRotated, 1));
+		int test = DH2.dropHeight(sRotated, 1);
+		DH2.place(sRotated, 1, test);
+		System.out.print(DH2.toString());
+	}
+	
+	@Test
+	public void dropheight3() {
+		Board DH2 = new Board(5,7);
+		DH2.place(stick1, 1, 0);
+		System.out.print(DH2.toString());
+		assertEquals(3, DH2.dropHeight(sRotated, 1));
+		int test = DH2.dropHeight(sRotated, 1);
+		DH2.place(sRotated, 1, test);
+		System.out.print(DH2.toString());
+	}
+	
+	
 	
 	
 	

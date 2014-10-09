@@ -65,7 +65,19 @@ public class Board	{
 	 to compute this fast -- O(skirt length).
 	*/
 	public int dropHeight(Piece piece, int x) {
-		return 0; // YOUR CODE HERE
+		int[] skirt = piece.getSkirt();
+		int minDistIndex = 0;
+		int dist = height + 10;
+		for (int row = 0; row < skirt.length; row++) {
+			int checkDist = height - getColumnHeight(x + row) + skirt[row];
+			if (checkDist < dist) {
+				dist = checkDist;
+				minDistIndex = row;
+			}
+		}
+		
+		int rHeight = getColumnHeight(x + minDistIndex) - skirt[minDistIndex];
+		return rHeight; 
 	}
 		
 
@@ -427,74 +439,6 @@ public class Board	{
 	public boolean getGrid(int x, int y) {
 		return grid[x][y]; 
 	}
-	
-	
-	/*	
-//	//toRow is number of row being checked
-//	int toRow = 0;
-//	int fromRow = 1;
-//	while (fromRow < maxHeight) {
-//		if (!isFilled(toRow)){
-//			toRow += 1;
-//			fromRow +=1;
-//		}else {
-//			// CASE: ToRow is at the top, i.e. we don't
-//			// need to check above or copy. We are done!
-//			if (toRow == maxHeight - 1) {
-//				widths[toRow] = 0;
-//				falsifyRow(toRow);
-//				rowsCleared += 1;
-//				lowerHeights(rowsCleared);
-//				sanityCheck();
-//				return rowsCleared;
-//				
-//			}else {
-//				while(isFilled(fromRow)) {
-//					if(fromRow + 1 == maxHeight) {
-//						
-//						// CASE: top row is filled, T somewhere below
-//						// with only filled rows in between
-//						// must falsify everything from T -> F
-//						for (int k = toRow; k <= fromRow; k++) {
-//							widths[k] =0;
-//							falsifyRow(k);
-//							rowsCleared += 1;
-//						}
-//						
-//						// We are done!
-//						
-//						lowerHeights(rowsCleared);
-//						sanityCheck();
-//						return rowsCleared;
-//					} else {
-//						
-//						// ready to check next row, clear fromRow
-//						rowsCleared += 1;
-//						falsifyRow(fromRow);
-//						fromRow += 1;
-//					}					
-//				}
-//				
-//				// CASE: we have found a from row that is incomplete
-//				// we have to copy the values in F to T
-//				// advance T row to next row up; ready to repeat
-//				//not done
-//				copyRow(toRow, fromRow);
-//				falsifyRow(fromRow);
-//				widths[fromRow] = 0;
-//				toRow += 1;
-//				rowsCleared += 1;
-//				
-//			}
-//			
-//			
-//		}
-//	}
-//	
-//	lowerHeights(rowsCleared);
-//	sanityCheck(); 
-* 
-*/
 
 	
 }
