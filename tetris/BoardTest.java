@@ -205,13 +205,23 @@ public class BoardTest {
 	
 	@Test
 	public void dropheight3() {
-		Board DH2 = new Board(5,7);
-		DH2.place(stick1, 1, 0);
-		System.out.print(DH2.toString());
-		assertEquals(3, DH2.dropHeight(sRotated, 1));
-		int test = DH2.dropHeight(sRotated, 1);
-		DH2.place(sRotated, 1, test);
-		System.out.print(DH2.toString());
+		Board DH3 = new Board(5,7);
+		DH3.place(stick1.fastRotation(), 0, 0);
+		System.out.print(DH3.toString());
+		assertEquals(1, DH3.dropHeight(s, 1));
+		int test = DH3.dropHeight(s, 1);
+		DH3.place(s, 1, test);
+		System.out.print(DH3.toString());
+	}
+	
+	// Make sure S piece is rotating correctly. Oddly, this was an issue.
+	@Test
+	public void pieceValidTest1() {
+		Board PV1 = new Board(6,7);
+		PV1.place(s, 0, 0);
+		PV1.place(s.fastRotation(), 4, 0);
+		System.out.print(PV1.toString());
+		
 	}
 	
 	

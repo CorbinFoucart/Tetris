@@ -82,128 +82,137 @@ public class PieceTest {
 		assertArrayEquals(stickSkirt, stick2.getSkirt());	
 	}
 	
-//	@Test
-//	// Test our overridden .equals() method
-//	public void testEquals(){
-//		assertEquals(true, pyr1.equals(pyr1test));
-//		assertEquals(true, stick1.equals(stick1test));
-//		assertEquals(true, L11.equals(L1test));
-//		assertEquals(true, L21.equals(L2test));
-//		assertEquals(true, S11.equals(S1test));
-//		assertEquals(true, S21.equals(S2test));
-//		assertEquals(true, sqr1.equals(sqr1test));
-//	}
-//	
-//	@Test
-//	// test the second set of rotations
-//	public void testRotation3() {
-//		// Check size of pyr piece
-//		int[] pyrSkirt = {1, 0, 1};
-//		assertEquals(3, pyr3.getWidth());
-//		assertEquals(2, pyr3.getHeight());
-//		assertArrayEquals(pyrSkirt, pyr3.getSkirt());
+	@Test
+	// Test our overridden .equals() method
+	public void testEquals(){
+		assertEquals(true, pyr1.equals(pyr1test));
+		assertEquals(true, stick1.equals(stick1test));
+		assertEquals(true, L11.equals(L1test));
+		assertEquals(true, L21.equals(L2test));
+		assertEquals(true, S11.equals(S1test));
+		assertEquals(true, S21.equals(S2test));
+		assertEquals(true, sqr1.equals(sqr1test));
+	}
+	
+	@Test
+	// test the second set of rotations
+	public void testRotation3() {
+		// Check size of pyr piece
+		int[] pyrSkirt = {1, 0, 1};
+		assertEquals(3, pyr3.getWidth());
+		assertEquals(2, pyr3.getHeight());
+		assertArrayEquals(pyrSkirt, pyr3.getSkirt());
+		
+	}
+	
+	@Test
+	// test the third set of rotations
+	public void testRotation4() {
+		// Check size of pyr piece
+		int[] pyrSkirt = {0, 1};
+		assertEquals(2, pyr4.getWidth());
+		assertEquals(3, pyr4.getHeight());
+		assertArrayEquals(pyrSkirt, pyr4.getSkirt());
+		
+	}
+	
+	@Test
+	// test the 4th set of rotations, equal to first
+	public void testRotation5() {
+		// Check size of pyr piece
+		int[] pyrSkirt = {0, 0, 0};
+		assertEquals(3, pyr5.getWidth());
+		assertEquals(2, pyr5.getHeight());
+		assertArrayEquals(pyrSkirt, pyr5.getSkirt());
+		
+	}
+	
+	
+	
+	
+	@Test
+	// Test the beginning attributes of each of the pieces without rotation
+	public void testSampleSize() {
+		// Check size of pyr piece
+		int[] pyrSkirt = {0, 0, 0};
+		assertEquals(3, pyr1.getWidth());
+		assertEquals(2, pyr1.getHeight());
+		assertEquals(pyrSkirt[0], pyr1.getSkirt()[0]);
+		assertEquals(pyrSkirt[1], pyr1.getSkirt()[1]);
+		assertEquals(pyrSkirt[2], pyr1.getSkirt()[2]);
+		assertArrayEquals(pyrSkirt, pyr1.getSkirt());
+		
+		
+		// Now try after rotation
+		// Effectively we're testing size and rotation code here
+		assertEquals(2, pyr2.getWidth());
+		assertEquals(3, pyr2.getHeight());
 //		
-//	}
-//	
-//	@Test
-//	// test the third set of rotations
-//	public void testRotation4() {
-//		// Check size of pyr piece
-//		int[] pyrSkirt = {0, 1};
-//		assertEquals(2, pyr4.getWidth());
-//		assertEquals(3, pyr4.getHeight());
-//		assertArrayEquals(pyrSkirt, pyr4.getSkirt());
-//		
-//	}
-//	
-//	@Test
-//	// test the 4th set of rotations, equal to first
-//	public void testRotation5() {
-//		// Check size of pyr piece
-//		int[] pyrSkirt = {0, 0, 0};
-//		assertEquals(3, pyr5.getWidth());
-//		assertEquals(2, pyr5.getHeight());
-//		assertArrayEquals(pyrSkirt, pyr5.getSkirt());
-//		
-//	}
-//	
-//	
-//	
-//	
-//	@Test
-//	// Test the beginning attributes of each of the pieces without rotation
-//	public void testSampleSize() {
-//		// Check size of pyr piece
-//		int[] pyrSkirt = {0, 0, 0};
-//		assertEquals(3, pyr1.getWidth());
-//		assertEquals(2, pyr1.getHeight());
-//		assertEquals(pyrSkirt[0], pyr1.getSkirt()[0]);
-//		assertEquals(pyrSkirt[1], pyr1.getSkirt()[1]);
-//		assertEquals(pyrSkirt[2], pyr1.getSkirt()[2]);
-//		assertArrayEquals(pyrSkirt, pyr1.getSkirt());
-//		
-//		
-//		// Now try after rotation
-//		// Effectively we're testing size and rotation code here
-//		assertEquals(2, pyr2.getWidth());
-//		assertEquals(3, pyr2.getHeight());
-////		
-////		// Now try with some other piece, made a different way
-////		Piece l = new Piece(Piece.STICK_STR);
-////		assertEquals(1, l.getWidth());
-////		assertEquals(4, l.getHeight());
-//		
-//		//check size of stick
-//		int[] stickSkirt = {0};
-//		assertEquals(1, stick1.getWidth());
-//		assertEquals(4, stick1.getHeight());
-//		assertArrayEquals(stickSkirt, stick1.getSkirt());
-//		
-//		//check size of L1
-//		int[] L1Skirt = {0,0};
-//		assertEquals(2, L11.getWidth());
-//		assertEquals(3, L11.getHeight());
-//		assertArrayEquals(L1Skirt, L11.getSkirt());
-//		
-//		//check size of L2
-//		int[] L2Skirt = {0,0};
-//		assertEquals(2, L21.getWidth());
-//		assertEquals(3, L21.getHeight());
-//		assertArrayEquals(L2Skirt, L21.getSkirt());
-//		
-//		//check size of S1
-//		int[] S1Skirt = {0,0,1};
-//		assertEquals(3, S11.getWidth());
-//		assertEquals(2, S11.getHeight());
-//		assertArrayEquals(S1Skirt, S11.getSkirt());
-//		
-//		//check size of S2
-//		int[] S2Skirt = {1,0,0};
-//		assertEquals(3, S21.getWidth());
-//		assertEquals(2, S21.getHeight());
-//		assertArrayEquals(S2Skirt, S21.getSkirt());
-//		
-//		
-//		//check size of sqr
-//		int[] sqrSkirt = {0,0};
-//		assertEquals(2, sqr1.getWidth());
-//		assertEquals(2, sqr1.getHeight());
-//		assertArrayEquals(sqrSkirt, sqr1.getSkirt());
-//				
-//	}
-//	
-//	
-//	// Test the skirt returned by a few pieces
-//	@Test
-//	public void testSampleSkirt() {
-//		// Note must use assertTrue(Arrays.equals(... as plain .equals does not work
-//		// right for arrays.
-//		assertTrue(Arrays.equals(new int[] {0, 0, 0}, pyr1.getSkirt()));
-//		assertTrue(Arrays.equals(new int[] {1, 0, 1}, pyr3.getSkirt()));
-//		
-//		assertTrue(Arrays.equals(new int[] {0, 0, 1}, s.getSkirt()));
-//		assertTrue(Arrays.equals(new int[] {1, 0}, sRotated.getSkirt()));
-//	}
+//		// Now try with some other piece, made a different way
+//		Piece l = new Piece(Piece.STICK_STR);
+//		assertEquals(1, l.getWidth());
+//		assertEquals(4, l.getHeight());
+		
+		//check size of stick
+		int[] stickSkirt = {0};
+		assertEquals(1, stick1.getWidth());
+		assertEquals(4, stick1.getHeight());
+		assertArrayEquals(stickSkirt, stick1.getSkirt());
+		
+		//check size of L1
+		int[] L1Skirt = {0,0};
+		assertEquals(2, L11.getWidth());
+		assertEquals(3, L11.getHeight());
+		assertArrayEquals(L1Skirt, L11.getSkirt());
+		
+		//check size of L2
+		int[] L2Skirt = {0,0};
+		assertEquals(2, L21.getWidth());
+		assertEquals(3, L21.getHeight());
+		assertArrayEquals(L2Skirt, L21.getSkirt());
+		
+		//check size of S1
+		int[] S1Skirt = {0,0,1};
+		assertEquals(3, S11.getWidth());
+		assertEquals(2, S11.getHeight());
+		assertArrayEquals(S1Skirt, S11.getSkirt());
+		
+		//check size of S2
+		int[] S2Skirt = {1,0,0};
+		assertEquals(3, S21.getWidth());
+		assertEquals(2, S21.getHeight());
+		assertArrayEquals(S2Skirt, S21.getSkirt());
+		
+		
+		//check size of sqr
+		int[] sqrSkirt = {0,0};
+		assertEquals(2, sqr1.getWidth());
+		assertEquals(2, sqr1.getHeight());
+		assertArrayEquals(sqrSkirt, sqr1.getSkirt());
+				
+	}
+	
+	@Test
+	public void testSPiece() {
+		assertEquals(3, s.getWidth());
+		assertEquals(2, s.getHeight());
+		assertEquals(2, sRotated.getWidth());
+		assertEquals(3, sRotated.getHeight());
+	}
+	
+	
+	
+	
+	// Test the skirt returned by a few pieces
+	@Test
+	public void testSampleSkirt() {
+		// Note must use assertTrue(Arrays.equals(... as plain .equals does not work
+		// right for arrays.
+		assertTrue(Arrays.equals(new int[] {0, 0, 0}, pyr1.getSkirt()));
+		assertTrue(Arrays.equals(new int[] {1, 0, 1}, pyr3.getSkirt()));
+		assertTrue(Arrays.equals(new int[] {0, 0, 1}, s.getSkirt()));
+		assertTrue(Arrays.equals(new int[] {1, 0}, sRotated.getSkirt()));
+	}
 	
 	
 }
