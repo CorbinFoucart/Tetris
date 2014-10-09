@@ -23,6 +23,9 @@ public class Board	{
 	
 	// BACKUP VARIABLES
 	private boolean[][] xGrid;
+	private int[] xWidths;
+	private int[] xHeights;
+	private int xMaxHeight;
 	
 	
 	
@@ -40,9 +43,10 @@ public class Board	{
 		this.widths = new int[height];
 		this.heights = new int[width];
 		
-		// YOUR CODE HERE
-	
-		
+		//backup variable construction
+		this.xGrid = new boolean[width][height];
+		this.xWidths = new int[height];
+		this.xHeights = new int[width];		
 	}
 	
 	/**
@@ -51,9 +55,34 @@ public class Board	{
 	 to the backup variables' values.
 	 */
 	public void saveBackup() {
-		xGrid = this.grid;
+		copyGrid(grid, xGrid);
+		System.arraycopy(widths, 0, xWidths, 0, widths.length);
+		System.arraycopy(heights, 0, xHeights, 0, heights.length);
+		xMaxHeight = maxHeight;
 	}
 	
+		// Helper method that copies the grid using System.arraycopy
+		private void copyGrid(boolean[][] srcGrid, boolean[][] destGrid) {
+			for (int i = 0; i < srcGrid.length; i++) {
+				System.arraycopy(srcGrid[i], 0, destGrid[i], 0, srcGrid[0].length);
+			}
+		}
+		
+		/**
+		 Reverts the board to its state before up to one place
+		 and one clearRows();
+		 If the conditions for undo() are not met, such as
+		 calling undo() twice in a row, then the second undo() does nothing.
+		 See the overview docs.
+		*/
+		public void undo() {
+			if(!committed) {
+				copyGrid(xGrid, grid);
+				System.arraycopy(xWidths, 0, widths, 0, xWidths.length);
+				System.arraycopy(xHeights, 0, heights, 0, xHeights.length);
+				maxHeight = xMaxHeight;
+			}
+		}
 	
 	/**
 	 Given a piece and an x, returns the y
@@ -86,6 +115,15 @@ public class Board	{
 	 things above down. Returns the number of rows cleared.
 	*/
 	public int clearRows() {
+		
+		// piece has NOT been placed
+		// if committed is already false, then we've 
+		// backed up already. WE only need to clear rows.
+		if (committed) {
+			saveBackup();
+			committed = false;
+		}
+		
 		int rowsCleared = 0;
 		
 		// make array of rows that are filled, falsify such rows
@@ -104,9 +142,10 @@ public class Board	{
 			}
 		}		
 
-		
 		lowerHeights(rowsCleared);
-		sanityCheck();		
+		sanityCheck();	
+		
+		
 		return rowsCleared;
 		
 	}
@@ -123,13 +162,8 @@ public class Board	{
 			falsifyRow(maxHeight - 1);
 			widths[maxHeight - 1] = 0;
 		}
-		
-		private boolean allFilledRemoved(boolean[] filledRows) {
-			for (boolean row : filledRows) if (row) return false;
-			return true;
-		}
 	
-		// Helper meoth for clearRows() that checks if a row is filled
+		// Helper method for clearRows() that checks if a row is filled
 		private boolean isFilled(int row) {
 			return (widths[row] == width);
 		}
@@ -160,17 +194,6 @@ public class Board	{
 			}
 			maxHeight -= rowsCleared;
 		}
-	
-	/**
-	 Reverts the board to its state before up to one place
-	 and one clearRows();
-	 If the conditions for undo() are not met, such as
-	 calling undo() twice in a row, then the second undo() does nothing.
-	 See the overview docs.
-	*/
-	public void undo() {
-		// YOUR CODE HERE
-	}
 	
 	/**
 	 Puts the board in the committed state.
@@ -233,10 +256,10 @@ public class Board	{
 		
 		// update widths[], heights[], maxHeight, and
 		// method returns whether a row was filled
-		if(updateAfterPlace(coordPts)) result = PLACE_ROW_FILLED;	
+		if(updateAfterPlace(coordPts)) result = PLACE_ROW_FILLED;
 		
 		if (sanityCheck) sanityCheck();
-//		committed = false;
+		committed = false;
 		return result;
 	}
 	
@@ -277,6 +300,7 @@ public class Board	{
 				for (int i = 0; i < coordPts.length; i++) {
 					grid[coordPts[i].x][coordPts[i].y] = true;
 				}
+				
 				return rowFilled;
 			}
 			
