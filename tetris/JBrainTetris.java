@@ -60,9 +60,6 @@ public class JBrainTetris extends JTetris {
 				saveCount = count;
 			}
 			
-			if (currentPiece == null) stopGame();
-			if (idealLocation == null) stopGame();
-			
 			// figure out whether to rotate and do so
 			boolean needsRotation = brainRotate();
 			
@@ -81,26 +78,37 @@ public class JBrainTetris extends JTetris {
 	
 	// rotate our piece if not agreeing with brain's instructions
 	public boolean brainRotate() {
-		if (!currentPiece.equals(idealLocation.piece)) {
-//			if (currentPiece == null) stopGame();
-//			if (idealLocation == null) stopGame();
-			
-			if (board.getMaxHeight() != HEIGHT){
-				tick(ROTATE);
-			}
-			return true;
-		}else return false;
+		if (currentPiece == null || idealLocation == null || idealLocation.piece == null) {
+			// Hack to avoid an Exception where I just manually lower the piece to end the game
+			tick(DROP);
+			board.commit();
+			board.place(currentPiece, currentX, currentY);
+			board.commit();
+			tick(DROP);
+			board.commit();
+			board.place(currentPiece, currentX, currentY);	
+			board.commit();
+			stopGame();
+		}else if (!currentPiece.equals(idealLocation.piece)) {
+			tick(ROTATE);
+			return true;			
+		}
+		return false;
 	}
 	
 	// moves our piece one horizontal step closer to its ideal position
 	// boolean is so we don't get hasty and drop a bad orientation
 	// into a good slot.
 	public void brainMove(boolean stillNeedsRotation) {
-		int idealX = idealLocation.x;
-		int dX = currentX - idealX;
-		if (dX < 0) tick(RIGHT);
-		if (dX > 0) tick(LEFT);
-		if (dX == 0 && !stillNeedsRotation) tick(DROP);
+		if (currentPiece == null || idealLocation == null || idealLocation.piece == null) {
+			// do nothing, we are at the end of the game and don't want a null exception
+		}else {
+			int idealX = idealLocation.x;
+			int dX = currentX - idealX;
+			if (dX < 0) tick(RIGHT);
+			if (dX > 0) tick(LEFT);
+			if (dX == 0 && !stillNeedsRotation) tick(DROP);
+		}
 	}
 	
 	// Picks next piece according to adversary
@@ -116,7 +124,8 @@ public class JBrainTetris extends JTetris {
 		return piece;
 	}
 	
-	
+		// gets the scores for all of the available pieces, and
+		// returns THE WORST ONE. HAHAHAHA Adversary mode
 		private Piece findWorstPiece() {
 			double largestScore = 0;
 			Piece returnPiece = pieces[0];

@@ -417,7 +417,9 @@ public class JTetris extends JComponent {
 	 Overriden by the brain when it plays.
 	*/
 	public void tick(int verb) {
-		if (!gameOn) return;
+		if (!gameOn) {
+			return;
+		}
 		
 		if (currentPiece != null) {
 			board.undo();	// remove the piece from its old position
@@ -470,6 +472,7 @@ public class JTetris extends JComponent {
 			
 			// if the board is too tall, we've lost
 			if (board.getMaxHeight() > board.getHeight() - TOP_SPACE) {
+				board.commit();
 				stopGame();
 			}
 			// Otherwise add a new piece and keep playing
