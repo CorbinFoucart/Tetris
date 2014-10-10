@@ -109,7 +109,10 @@ public class DefaultBrain implements Brain {
         
         // Add up the counts to make an overall score
         // The weights, 8, 40, etc., are just made up numbers that appear to work
-        return (8*maxHeight + 40*avgHeight + 1.25*holes);    
+        return (8*maxHeight + 40*avgHeight + 1.25*holes);
+        // 8
+        // 40 
+        // 1.25
     }
 
 }

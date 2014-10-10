@@ -658,7 +658,7 @@ public class JTetris extends JComponent {
 		panel.add(Box.createVerticalStrut(12));
 		row.add(new JLabel("Speed:"));
 		speed = new JSlider(0, 200, 75);	// min, max, current
-		speed.setPreferredSize(new Dimension(100, 15));
+		speed.setPreferredSize(new Dimension(100, 120));
 		
 		updateTimer();
 		row.add(speed);

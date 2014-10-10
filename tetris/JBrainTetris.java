@@ -1,10 +1,13 @@
 package tetris;
 
+import java.awt.Dimension;
+
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.UIManager;
 
 import tetris.Brain.Move;
@@ -55,6 +58,9 @@ public class JBrainTetris extends JTetris {
 				saveCount = count;
 			}
 			
+			if (currentPiece == null) stopGame();
+			if (idealLocation == null) stopGame();
+			
 			// figure out whether to rotate and do so
 			boolean needsRotation = brainRotate();
 			
@@ -74,7 +80,12 @@ public class JBrainTetris extends JTetris {
 	// rotate our piece if not agreeing with brain's instructions
 	public boolean brainRotate() {
 		if (!currentPiece.equals(idealLocation.piece)) {
-			tick(ROTATE);
+//			if (currentPiece == null) stopGame();
+//			if (idealLocation == null) stopGame();
+			
+			if (board.getMaxHeight() != HEIGHT){
+				tick(ROTATE);
+			}
 			return true;
 		}else return false;
 	}
@@ -104,7 +115,20 @@ public class JBrainTetris extends JTetris {
 		
 		saveCount = 0;
 		
-		// ADD ADVERSARY
+		// add Adversary paneling
+		JPanel little = new JPanel();
+		little.add(new JLabel("Adversary"));
+		JSlider adversary = new JSlider(0, 100, 0);
+		adversary.setPreferredSize(new Dimension(120, 30));
+		little.add(adversary);
+		panel.add(little);
+		JLabel ok = new JLabel("ok");
+		panel.add(ok);
+//		ok.setText("*ok*");
+		
+		
+		
+		
 		
 		return panel;
 	}
