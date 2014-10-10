@@ -7,9 +7,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
+import tetris.Brain.Move;
+
 public class JBrainTetris extends JTetris {
 	
 	private DefaultBrain brain;
+	private Move idealLocation;
+	private int saveCount;
+	JCheckBox brainMode;
 
 	JBrainTetris(int pixels) {
 		super(pixels);
@@ -34,6 +39,58 @@ public class JBrainTetris extends JTetris {
 	}
 	
 	/**
+	 * Tick(DOWN) Override, allows the DefaultBrain to
+	 * control the piece before as it falls. 
+	 */
+	@Override()
+	public void tick(int verb) {
+		super.tick(verb);
+		if (verb == DOWN && brainMode.isSelected()) {
+			// if it's a fresh piece, call the brain to give us 
+			// some ideal real estate for it
+			if (count != saveCount){
+				board.undo();
+				idealLocation = brain.bestMove(board, currentPiece, HEIGHT, null);
+				board.commit();
+				saveCount = count;
+			}
+			
+			// figure out whether to rotate and do so
+			boolean needsRotation = brainRotate();
+			
+			// figure out which way to move our piece L/R
+			brainMove(needsRotation);
+			board.undo();
+			int result = board.place(currentPiece, currentX, currentY - 1);
+			
+			boolean failed = (result >= Board.PLACE_OUT_BOUNDS);
+			if (failed) super.tick(DOWN);
+			
+		}
+		
+		
+	}
+	
+	// rotate our piece if not agreeing with brain's instructions
+	public boolean brainRotate() {
+		if (!currentPiece.equals(idealLocation.piece)) {
+			tick(ROTATE);
+			return true;
+		}else return false;
+	}
+	
+	// moves our piece one horizontal step closer to its ideal position
+	// boolean is so we don't get hasty and drop a bad orientation
+	// into a good slot.
+	public void brainMove(boolean stillNeedsRotation) {
+		int idealX = idealLocation.x;
+		int dX = currentX - idealX;
+		if (dX < 0) tick(RIGHT);
+		if (dX > 0) tick(LEFT);
+		if (dX == 0 && !stillNeedsRotation) tick(DROP);
+	}
+	
+	/**
 	 * createControlPanel() override
 	 */
 	@Override()
@@ -41,8 +98,14 @@ public class JBrainTetris extends JTetris {
 		JPanel panel =  (JPanel) super.createControlPanel();
 		
 		panel.add(new JLabel("Brain"));
-		JCheckBox brainMode = new JCheckBox("Brain active");
+		brainMode = new JCheckBox("Brain active");
 		panel.add(brainMode);
+		
+		
+		saveCount = 0;
+		
+		// ADD ADVERSARY
+		
 		return panel;
 	}
 	
