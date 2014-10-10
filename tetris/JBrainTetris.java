@@ -18,6 +18,8 @@ public class JBrainTetris extends JTetris {
 	private Move idealLocation;
 	private int saveCount;
 	JCheckBox brainMode;
+	JSlider adversary;
+	JLabel ok;
 
 	JBrainTetris(int pixels) {
 		super(pixels);
@@ -101,6 +103,35 @@ public class JBrainTetris extends JTetris {
 		if (dX == 0 && !stillNeedsRotation) tick(DROP);
 	}
 	
+	// Picks next piece according to adversary
+	@Override
+	public Piece pickNextPiece() {
+		Piece piece = super.pickNextPiece();
+		int rNum = (int) (100*random.nextDouble());
+		if (rNum < adversary.getValue()) {
+			// find worst piece it could possibly be
+			piece = findWorstPiece();
+			ok.setText("*ok*");
+		}else ok.setText("ok");
+		return piece;
+	}
+	
+	
+		private Piece findWorstPiece() {
+			double largestScore = 0;
+			Piece returnPiece = pieces[0];
+			for (int i = 0; i < pieces.length; i++) {
+				Piece candidate = pieces[i];
+				Move moveCandidate = brain.bestMove(board, candidate, HEIGHT, null);
+				if (moveCandidate.score > largestScore) {
+					returnPiece = pieces[i];
+					largestScore = moveCandidate.score;
+				}
+			}
+			
+			return returnPiece;			
+		}
+	
 	/**
 	 * createControlPanel() override
 	 */
@@ -118,13 +149,13 @@ public class JBrainTetris extends JTetris {
 		// add Adversary paneling
 		JPanel little = new JPanel();
 		little.add(new JLabel("Adversary"));
-		JSlider adversary = new JSlider(0, 100, 0);
+		adversary = new JSlider(0, 100, 0);
 		adversary.setPreferredSize(new Dimension(120, 30));
 		little.add(adversary);
 		panel.add(little);
-		JLabel ok = new JLabel("ok");
+		ok = new JLabel("ok");
 		panel.add(ok);
-//		ok.setText("*ok*");
+
 		
 		
 		
